@@ -2,6 +2,8 @@
 
 This is my copy of following along the [Unreal VR Dev](https://www.udemy.com/unrealvr/) course. The content is from Sam Pattuzzi and Ben Tristem and can be found here: https://github.com/UnrealVR/1_Architecture_Explorer.
 
+This repository is nearly identical to what Sam and Ben created. All credit for the material goes to them.
+
 Understand the causes of VR sickness. Implement teleportation, play-space movement and controller movement. Navigate an architectural scene.
 
 ### 0 Course Promo ###
