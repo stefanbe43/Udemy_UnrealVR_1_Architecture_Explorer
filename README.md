@@ -24,8 +24,6 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Setting up our base project.
 + How head tracking works in Unreal.
 
-# I have finished up to this point.
-
 ### 3 Movement Section Overview ###
 
 + Overview of the syllabus for this section.
@@ -38,6 +36,8 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Finding the look direction.
 + Setup the characters movement.
 + The draw backs of controller movement.
+
+# I have finished up to this point.
 
 ### 5 Importing An ArchViz Environment ###
 
