@@ -37,14 +37,14 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Setup the characters movement.
 + The draw backs of controller movement.
 
-# I have finished up to this point.
-
 ### 5 Importing An ArchViz Environment ###
 
 + Importing a beautiful environment.
 + Why we shouldn't version these files.
 + Setup the `GameMode`.
 + Why do collisions behave strangely?
+
+# I have finished up to this point.
 
 ### 6 Playspace Movement and Colliders ###
 
