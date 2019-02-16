@@ -44,13 +44,13 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Setup the `GameMode`.
 + Why do collisions behave strangely?
 
-# I have finished up to this point.
-
 ### 6 Playspace Movement and Colliders ###
 
 + How can we avoid the collision issue?
 + Adding a VR root component.
 + Aligning the camera to the capsule.
+
+# I have finished up to this point.
 
 ### 7 What Is VR Sickness? ###
 

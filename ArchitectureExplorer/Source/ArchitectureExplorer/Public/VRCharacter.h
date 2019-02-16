@@ -24,6 +24,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent *Camera;
 
+	USceneComponent *VRRoot;
+
 	void OnMoveForward(float throttle);
 	void OnMoveRight(float throttle);
 
