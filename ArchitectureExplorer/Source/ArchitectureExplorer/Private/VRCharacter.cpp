@@ -2,6 +2,8 @@
 
 #include "VRCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "Engine/World.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -20,6 +22,12 @@ AVRCharacter::AVRCharacter()
 	{
 		Camera->SetupAttachment(VRRoot);
 	}
+
+	DestinationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DestinationMarker"));
+	if (ensure(DestinationMarker != nullptr))
+	{
+		DestinationMarker->SetupAttachment(GetRootComponent());
+	}
 }
 
 // Called when the game starts or when spawned
@@ -34,21 +42,54 @@ void AVRCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (ensure((Camera != nullptr) && (VRRoot != nullptr)))
+	MovePawnToVRCamera();
+
+	MoveDestinationMarkerByLineTrace();
+}
+
+void AVRCharacter::MoveDestinationMarkerByLineTrace()
+{
+	if (!ensure((Camera != nullptr) && (DestinationMarker != nullptr)))
 	{
-		auto CameraLocation = Camera->GetComponentLocation();
-
-		// how far camera has moved away from actor this frame
-		auto Delta = CameraLocation - GetActorLocation();
-		// clear the vertical direction
-		Delta.Z = 0.f;
-
-		// move ourselves to camera's location
-		AddActorWorldOffset(Delta);
-
-		// move VRRoot in opposite direction to keep the camera stationary
-		VRRoot->AddWorldOffset(-Delta);
+		return;
 	}
+
+	// output parameter
+	FHitResult OutHitResult;
+
+	// trace from our character's location to 100 meters out in direction where we look
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + MaxTeleportDistance * Camera->GetForwardVector().GetSafeNormal();
+
+	// do the linetrace
+	auto bLineTraceFoundTarget = GetWorld()->LineTraceSingleByChannel(OutHitResult, Start, End, ECollisionChannel::ECC_Visibility);
+
+	// if linetrace successful, move DestinationMarker to where linetrace hit
+	if (bLineTraceFoundTarget)
+	{
+		DestinationMarker->SetWorldLocation(OutHitResult.Location);
+	}
+}
+
+void AVRCharacter::MovePawnToVRCamera()
+{
+	if (!ensure((Camera != nullptr) && (VRRoot != nullptr)))
+	{
+		return;
+	}
+
+	auto CameraLocation = Camera->GetComponentLocation();
+
+	// how far camera has moved away from actor this frame
+	auto Delta = CameraLocation - GetActorLocation();
+	// clear the vertical direction
+	Delta.Z = 0.f;
+
+	// move ourselves to camera's location
+	AddActorWorldOffset(Delta);
+
+	// move VRRoot in opposite direction to keep the camera stationary
+	VRRoot->AddWorldOffset(-Delta);
 }
 
 // Called to bind functionality to input

@@ -50,8 +50,6 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Adding a VR root component.
 + Aligning the camera to the capsule.
 
-# I have finished up to this point.
-
 ### 7 What Is VR Sickness? ###
 
 + Why do we feel VR sickness?
@@ -65,6 +63,8 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Creating a destination marker.
 + Revision of Line Tracing in C++.
 + Positioning the destination with gaze.
+
+# I have finished up to this point.
 
 ### 9 Importing And Using Materials ###
 

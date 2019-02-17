@@ -24,7 +24,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent *Camera;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	USceneComponent *VRRoot;
+
+	// VR marker for teleportation
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	UStaticMeshComponent *DestinationMarker;
 
 	void OnMoveForward(float throttle);
 	void OnMoveRight(float throttle);
@@ -38,4 +43,15 @@ public:
 
 private:
 
+	// move the player pawn to the position of the VR camera
+	// and then readjust the VRRoot in the opposite direction to keep camera stationary
+	// ---
+	// when we walk around in our vr space, this will ensure the pawn location updates, too
+	void MovePawnToVRCamera();
+
+	// move the DestinationMarker to the first hit of a linetrace
+	void MoveDestinationMarkerByLineTrace();
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxTeleportDistance = 1000.0f; // centimeters
 };
