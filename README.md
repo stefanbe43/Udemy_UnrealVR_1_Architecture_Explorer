@@ -64,13 +64,13 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Revision of Line Tracing in C++.
 + Positioning the destination with gaze.
 
-# I have finished up to this point.
-
 ### 9 Importing And Using Materials ###
 
 + Fixing the cylinder bug.
 + Importing a teleport material.
 + Showing/hiding the destination.
+
+# I have finished up to this point.
 
 ### 10 Fades, Timers and Teleporting ###
 

@@ -35,6 +35,11 @@ void AVRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!ensure(DestinationMarker != nullptr))
+	{
+		DestinationMarker->SetVisibility(false);
+	}
+
 }
 
 // Called every frame
@@ -64,10 +69,16 @@ void AVRCharacter::MoveDestinationMarkerByLineTrace()
 	// do the linetrace
 	auto bLineTraceFoundTarget = GetWorld()->LineTraceSingleByChannel(OutHitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
-	// if linetrace successful, move DestinationMarker to where linetrace hit
+	// if linetrace successful, move DestinationMarker to where linetrace hit and unhide it
 	if (bLineTraceFoundTarget)
 	{
 		DestinationMarker->SetWorldLocation(OutHitResult.Location);
+		DestinationMarker->SetVisibility(true);
+	}
+	// otherwise hide the DestinationMarker
+	else
+	{
+		DestinationMarker->SetVisibility(false);
 	}
 }
 
