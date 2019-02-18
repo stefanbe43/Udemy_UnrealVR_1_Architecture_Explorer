@@ -70,14 +70,14 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Importing a teleport material.
 + Showing/hiding the destination.
 
-# I have finished up to this point.
-
 ### 10 Fades, Timers and Teleporting ###
 
 + Setting up a teleport action.
 + Teleporting to the right location.
 + Fading the camera.
 + Setting a timer to fade up.
+
+# I have finished up to this point.
 
 ### 11 Projecting Onto The NavMesh ###
 

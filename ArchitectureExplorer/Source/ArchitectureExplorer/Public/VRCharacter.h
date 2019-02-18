@@ -7,6 +7,7 @@
 #include "VRCharacter.generated.h"
 
 class UCameraComponent;
+struct FTimerHandle;
 
 UCLASS()
 class ARCHITECTUREEXPLORER_API AVRCharacter : public ACharacter
@@ -31,8 +32,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 	UStaticMeshComponent *DestinationMarker;
 
+	// player input handlers
 	void OnMoveForward(float throttle);
 	void OnMoveRight(float throttle);
+	void OnTeleport();
 
 public:	
 	// Called every frame
@@ -49,9 +52,30 @@ private:
 	// when we walk around in our vr space, this will ensure the pawn location updates, too
 	void MovePawnToVRCamera();
 
-	// move the DestinationMarker to the first hit of a linetrace
-	void MoveDestinationMarkerByLineTrace();
+private:
+	// TELEPORT FUNCTIONALITY
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxTeleportDistance = 1000.0f; // centimeters
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float TeleportFadeOut = 1.0f; // seconds
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float TeleportFadeIn = 1.0f; // seconds
+
+	FTimerHandle TeleportFadeTimerHandle;
+
+	// we don't teleport until after the fade-out completes
+	// this variable is used to remember where we want to teleport to
+	FVector TeleportLocation;
+
+	// move the DestinationMarker to the first hit of a linetrace
+	// this is called every tick
+	void MoveDestinationMarkerByLineTrace();
+
+	// functions to begin and finish teleportation
+	// phasing in and out requires two separate steps
+	void BeginTeleport();
+	void FinishTeleport();
 };
