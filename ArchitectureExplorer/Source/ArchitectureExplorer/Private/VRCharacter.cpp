@@ -8,6 +8,7 @@
 #include "TimerManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Components/CapsuleComponent.h"
+#include "NavigationSystem.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -146,23 +147,18 @@ void AVRCharacter::MovePawnToVRCamera()
 	VRRoot->AddWorldOffset(-Delta);
 }
 
-void AVRCharacter::MoveDestinationMarkerByLineTrace()
+bool AVRCharacter::bFindTeleportDestination(FVector &OutLocation)
 {
 	auto World = GetWorld();
 
 	if (!ensure(World != nullptr))
 	{
-		return;
+		return false;
 	}
 
 	if (!ensure(Camera != nullptr))
 	{
-		return;
-	}
-
-	if (!ensure(DestinationMarker != nullptr))
-	{
-		return;
+		return false;
 	}
 
 	// don't do line traces if we have a teleport in progress
@@ -170,30 +166,81 @@ void AVRCharacter::MoveDestinationMarkerByLineTrace()
 	if (GetWorldTimerManager().IsTimerActive(TeleportFadeTimerHandle))
 	{
 		DestinationMarker->SetVisibility(false);
-		return;
+		return false;
 	}
 
 	// output parameter
-	FHitResult OutHitResult;
+	FHitResult HitResult;
 
 	// trace from our character's location to 100 meters out in direction where we look
 	FVector Start = Camera->GetComponentLocation();
 	FVector End = Start + MaxTeleportDistance * Camera->GetForwardVector().GetSafeNormal();
 
 	// do the linetrace
-	auto bLineTraceFoundTarget = World->LineTraceSingleByChannel(OutHitResult, Start, End, ECollisionChannel::ECC_Visibility);
-
-	// if linetrace successful, move DestinationMarker to where linetrace hit and unhide it
-	if (bLineTraceFoundTarget)
+	auto bLineTraceFoundTarget = World->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+	if (!bLineTraceFoundTarget)
 	{
-		DestinationMarker->SetWorldLocation(OutHitResult.Location);
+		return false;
+	}
+
+	// output parameter
+	FVector NavLocation;
+
+	// and project to navigation mesh
+	bool bNavLocationFound = false;
+	bNavLocationFound = bProjectTeleportToNavigation(OutLocation, HitResult.Location);
+
+	return bNavLocationFound;
+}
+
+void AVRCharacter::MoveDestinationMarkerByLineTrace()
+{
+	if (!ensure(DestinationMarker != nullptr))
+	{
+		return;
+	}
+
+	// output parameter
+	FVector Location;
+
+	// if successful, move DestinationMarker to where linetrace hit projected to navigation mesh and unhide it
+	if (bFindTeleportDestination(Location))
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("AVRCharacter::MoveDestinationMarkerByLineTrace() target found at %s"), *(NavLocation.ToString()));
+		DestinationMarker->SetWorldLocation(Location);
 		DestinationMarker->SetVisibility(true);
 	}
 	// otherwise hide the DestinationMarker
 	else
 	{
+		//UE_LOG(LogTemp, Warning, TEXT("AVRCharacter::MoveDestinationMarkerByLineTrace() target not found trace=%d navloc=%d"), bLineTraceFoundTarget, bNavLocationFound);
 		DestinationMarker->SetVisibility(false);
 	}
+}
+
+bool AVRCharacter::bProjectTeleportToNavigation(FVector &OutLocation, FVector InLocation)
+{
+	auto World = GetWorld();
+
+	if (!ensure(World != nullptr))
+	{
+		return false;
+	}
+
+	auto NavigationSystem = Cast<UNavigationSystemV1>(World->GetNavigationSystem());
+
+	if (!ensure(NavigationSystem != nullptr))
+	{
+		return false;
+	}
+
+	FNavLocation OutNavLocation;
+
+	auto bNavLocationFound = NavigationSystem->ProjectPointToNavigation(InLocation, OutNavLocation, TeleportProjectionExtent);
+
+	OutLocation = OutNavLocation.Location;
+
+	return bNavLocationFound;
 }
 
 void AVRCharacter::BeginTeleport()

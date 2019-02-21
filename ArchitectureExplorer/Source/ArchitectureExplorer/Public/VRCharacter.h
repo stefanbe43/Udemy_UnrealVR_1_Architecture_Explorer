@@ -64,11 +64,22 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TeleportFadeIn = 1.0f; // seconds
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	FVector TeleportProjectionExtent = FVector(100.0f, 100.0f, 100.0f);
+
 	FTimerHandle TeleportFadeTimerHandle;
 
 	// we don't teleport until after the fade-out completes
 	// this variable is used to remember where we want to teleport to
 	FVector TeleportLocation;
+
+	// project the teleport location down to the navigation mesh to avoid targets that are on walls
+	// returns true if navigation mesh point was found
+	bool bProjectTeleportToNavigation(FVector &OutLocation, FVector InLocation);
+
+	// do a line trace and project point to navigation mesh to find a teleport destination
+	// returns true if found
+	bool bFindTeleportDestination(FVector &OutLocation);
 
 	// move the DestinationMarker to the first hit of a linetrace
 	// this is called every tick

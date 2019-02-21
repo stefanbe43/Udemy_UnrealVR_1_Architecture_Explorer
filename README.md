@@ -77,14 +77,14 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Fading the camera.
 + Setting a timer to fade up.
 
-# I have finished up to this point.
-
 ### 11 Projecting Onto The NavMesh ###
 
 + How can we constrain the teleport destination?
 + Setting up a NavMesh.
 + Projecting to the NavMesh.
 + A brief refactor.
+
+# I have finished up to this point.
 
 ### 12 PostProcessing Materials ###
 
