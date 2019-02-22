@@ -84,14 +84,14 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Projecting to the NavMesh.
 + A brief refactor.
 
-# I have finished up to this point.
-
 ### 12 PostProcessing Materials ###
 
 + What is a material?
 + Creating a post processing material.
 + Overview of the nodes we need.
 + Creating a tunnel vision effect.
+
+# I have finished up to this point.
 
 ### 13 Dynamic Material Instances ###
 
