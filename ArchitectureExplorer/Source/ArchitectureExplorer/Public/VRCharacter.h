@@ -6,7 +6,17 @@
 #include "GameFramework/Character.h"
 #include "VRCharacter.generated.h"
 
+// Forward declarations
+//
+// I could also include the headers, but I avoid including headers in headers
+// to improve compile times. A forward declaration is enough as long as
+// my header doesn't need to know about what the type implements. Since the
+// code is in the cpp file, it usually doesn't need to know about the
+// implementation.
 class UCameraComponent;
+class UPostProcessComponent;
+class UMaterialInterface;
+class UMaterialInstanceDynamic;
 struct FTimerHandle;
 
 UCLASS()
@@ -18,31 +28,26 @@ public:
 	// Sets default values for this character's properties
 	AVRCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	UCameraComponent *Camera;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	USceneComponent *VRRoot;
-
-	// VR marker for teleportation
-	UPROPERTY(VisibleAnywhere, Category = "Movement")
-	UStaticMeshComponent *DestinationMarker;
-
-	// player input handlers
-	void OnMoveForward(float throttle);
-	void OnMoveRight(float throttle);
-	void OnTeleport();
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	UCameraComponent *Camera = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	USceneComponent *VRRoot = nullptr;
+
+	// player input handlers
+	void OnMoveForward(float throttle);
+	void OnMoveRight(float throttle);
+	void OnTeleport();
 
 private:
 
@@ -52,8 +57,36 @@ private:
 	// when we walk around in our vr space, this will ensure the pawn location updates, too
 	void MovePawnToVRCamera();
 
+////////////////////////
+// BLINKER FUNCTIONALITY
+protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Setup")
+	UPostProcessComponent *PostProcessComponent = nullptr;
+
 private:
-	// TELEPORT FUNCTIONALITY
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	UMaterialInterface *BlinkerMaterialBase = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Blinker")
+	UMaterialInstanceDynamic *BlinkerMaterialInstance = nullptr;;
+
+	// Setup the blinker postprocessing effect
+	//
+	// the blinker material type comes from Blueprint set via the BlinkerMaterialBase
+	// I create a dynamic material to allow for blinker parameters to be modified
+	// at run-time. For example, we can adjust the radius depending on player movement.
+	void SetupBlinkerPostprocessingEffect();
+
+/////////////////////////
+// TELEPORT FUNCTIONALITY
+protected:
+	// VR marker for teleportation
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	UStaticMeshComponent *DestinationMarker = nullptr;
+
+private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxTeleportDistance = 1000.0f; // centimeters

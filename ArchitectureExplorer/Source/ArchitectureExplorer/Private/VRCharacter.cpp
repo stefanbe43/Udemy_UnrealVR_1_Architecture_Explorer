@@ -9,6 +9,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Components/CapsuleComponent.h"
 #include "NavigationSystem.h"
+#include "Components/PostProcessComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -33,6 +35,12 @@ AVRCharacter::AVRCharacter()
 	{
 		DestinationMarker->SetupAttachment(GetRootComponent());
 	}
+
+	PostProcessComponent = CreateDefaultSubobject<UPostProcessComponent>(TEXT("PostProcessComponent"));
+	if (ensure(PostProcessComponent != nullptr))
+	{
+		PostProcessComponent->SetupAttachment(GetRootComponent());
+	}
 }
 
 // Called when the game starts or when spawned
@@ -40,11 +48,38 @@ void AVRCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!ensure(DestinationMarker != nullptr))
+	if (ensure(DestinationMarker != nullptr))
 	{
 		DestinationMarker->SetVisibility(false);
 	}
 
+	SetupBlinkerPostprocessingEffect();
+
+}
+
+void AVRCharacter::SetupBlinkerPostprocessingEffect()
+{
+	if (!ensure(PostProcessComponent != nullptr))
+	{
+		return;
+	}
+
+	if (BlinkerMaterialBase == nullptr)
+	{
+		return;
+	}
+
+	BlinkerMaterialInstance = UMaterialInstanceDynamic::Create(BlinkerMaterialBase, this);
+	if (BlinkerMaterialInstance == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AVRCharacter::SetupBlinkerPostprocessingEffect() unable to create the blinker dynamic material"));
+		return;
+	}
+
+	PostProcessComponent->AddOrUpdateBlendable(BlinkerMaterialBase);
+
+	// set some starting value - this will be dynamically adjusted elsewhere
+	BlinkerMaterialInstance->SetScalarParameterValue(FName(TEXT("Radius")), 0.4f);
 }
 
 // Called every frame

@@ -91,14 +91,14 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Overview of the nodes we need.
 + Creating a tunnel vision effect.
 
-# I have finished up to this point.
-
 ### 13 Dynamic Material Instances ###
 
 + What are material parameters?
 + Setup a post processing component.
 + Dynamic vs static material instances.
 + Creating a material instance.
+
+# I have finished up to this point.
 
 ### 14 Adjusting Radius With A Curve ###
 
