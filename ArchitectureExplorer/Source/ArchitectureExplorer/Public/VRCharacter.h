@@ -17,6 +17,7 @@ class UCameraComponent;
 class UPostProcessComponent;
 class UMaterialInterface;
 class UMaterialInstanceDynamic;
+class UCurveFloat;
 struct FTimerHandle;
 
 UCLASS()
@@ -61,16 +62,19 @@ private:
 // BLINKER FUNCTIONALITY
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Setup")
+	UPROPERTY(VisibleAnywhere, Category = "Blinker")
 	UPostProcessComponent *PostProcessComponent = nullptr;
 
 private:
 
-	UPROPERTY(EditAnywhere, Category = "Setup")
+	UPROPERTY(EditAnywhere, Category = "Blinker")
 	UMaterialInterface *BlinkerMaterialBase = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Blinker")
-	UMaterialInstanceDynamic *BlinkerMaterialInstance = nullptr;;
+	UMaterialInstanceDynamic *BlinkerMaterialInstance = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Blinker")
+	UCurveFloat *RadiusVsVelocity = nullptr;
 
 	// Setup the blinker postprocessing effect
 	//
@@ -78,6 +82,11 @@ private:
 	// I create a dynamic material to allow for blinker parameters to be modified
 	// at run-time. For example, we can adjust the radius depending on player movement.
 	void SetupBlinkerPostprocessingEffect();
+
+	// calculate a new blinker radius based on my current velocity
+	//
+	// the faster character goes, the tighter the blinker should be
+	void UpdateBlinkerRadius();
 
 /////////////////////////
 // TELEPORT FUNCTIONALITY

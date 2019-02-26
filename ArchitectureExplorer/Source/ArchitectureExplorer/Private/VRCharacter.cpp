@@ -11,6 +11,7 @@
 #include "NavigationSystem.h"
 #include "Components/PostProcessComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Curves/CurveFloat.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
@@ -76,10 +77,7 @@ void AVRCharacter::SetupBlinkerPostprocessingEffect()
 		return;
 	}
 
-	PostProcessComponent->AddOrUpdateBlendable(BlinkerMaterialBase);
-
-	// set some starting value - this will be dynamically adjusted elsewhere
-	BlinkerMaterialInstance->SetScalarParameterValue(FName(TEXT("Radius")), 0.4f);
+	PostProcessComponent->AddOrUpdateBlendable(BlinkerMaterialInstance);
 }
 
 // Called every frame
@@ -92,6 +90,29 @@ void AVRCharacter::Tick(float DeltaTime)
 
 	// update teleportation marker
 	MoveDestinationMarkerByLineTrace();
+
+	UpdateBlinkerRadius();
+}
+
+void AVRCharacter::UpdateBlinkerRadius()
+{
+	if (RadiusVsVelocity == nullptr)
+	{
+		return;
+	}
+
+	if (BlinkerMaterialInstance == nullptr)
+	{
+		return;
+	}
+
+	float BlinkerRadius = 0.0f;
+	float MySpeed = GetVelocity().Size();
+
+	BlinkerRadius = RadiusVsVelocity->GetFloatValue(MySpeed);
+
+	//UE_LOG(LogTemp, Warning, TEXT("AVRCharacter::UpdateBlinkerRadius() setting Radius to %1.4f"), BlinkerRadius);
+	BlinkerMaterialInstance->SetScalarParameterValue(TEXT("Radius"), BlinkerRadius);
 }
 
 // Called to bind functionality to input

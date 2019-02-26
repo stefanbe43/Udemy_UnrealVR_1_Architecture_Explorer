@@ -98,13 +98,13 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Dynamic vs static material instances.
 + Creating a material instance.
 
-# I have finished up to this point.
-
 ### 14 Adjusting Radius With A Curve ###
 
 + What is a curve?
 + Accessing a curve from C++.
 + Setting the radius from speed.
+
+# I have finished up to this point.
 
 ### 15 Creating Tunnel Vision ###
 
