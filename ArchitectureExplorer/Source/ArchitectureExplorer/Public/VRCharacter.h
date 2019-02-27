@@ -84,9 +84,17 @@ private:
 	void SetupBlinkerPostprocessingEffect();
 
 	// calculate a new blinker radius based on my current velocity
+	// then update the blinker radius
 	//
 	// the faster character goes, the tighter the blinker should be
 	void UpdateBlinkerRadius();
+
+	// calculate a new blinker center based on direction character moves
+	// do not update the blinker center in this function
+	FVector2D CalculateBlinkerCenter() const;
+
+	// update the blinker center (calls CalculateBlinkerCenter)
+	void UpdateBlinkerCenter();
 
 /////////////////////////
 // TELEPORT FUNCTIONALITY

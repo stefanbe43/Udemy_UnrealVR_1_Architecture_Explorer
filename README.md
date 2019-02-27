@@ -104,8 +104,6 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Accessing a curve from C++.
 + Setting the radius from speed.
 
-# I have finished up to this point.
-
 ### 15 Creating Tunnel Vision ###
 
 + Where is the centre of movement?
@@ -113,6 +111,8 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Projecting to the screen.
 + Getting the screen size.
 + Calculating the centre.
+
+# I have finished up to this point.
 
 ### 16 Hand Controller Components ###
 
