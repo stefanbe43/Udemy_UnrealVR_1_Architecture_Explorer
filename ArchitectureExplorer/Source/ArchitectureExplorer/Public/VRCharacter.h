@@ -18,6 +18,7 @@ class UPostProcessComponent;
 class UMaterialInterface;
 class UMaterialInstanceDynamic;
 class UCurveFloat;
+class UMotionControllerComponent;
 struct FTimerHandle;
 
 UCLASS()
@@ -57,6 +58,17 @@ private:
 	// ---
 	// when we walk around in our vr space, this will ensure the pawn location updates, too
 	void MovePawnToVRCamera();
+
+/////////////////////
+// MOTION CONTROLLERS
+
+private:
+
+	UPROPERTY(VisibleAnywhere, Category = "Controller")
+	UMotionControllerComponent *LeftMotionControllerComponent = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Controller")
+	UMotionControllerComponent *RightMotionControllerComponent = nullptr;
 
 ////////////////////////
 // BLINKER FUNCTIONALITY

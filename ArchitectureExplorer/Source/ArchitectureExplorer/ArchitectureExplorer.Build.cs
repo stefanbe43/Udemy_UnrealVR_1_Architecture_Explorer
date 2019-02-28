@@ -7,11 +7,10 @@ public class ArchitectureExplorer : ModuleRules
 	public ArchitectureExplorer(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        // Added so that ProjectPointToNavigation code in VRCharacter.cpp works
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem" });
+        // Added NavigationSystem so that ProjectPointToNavigation code in VRCharacter.cpp works
+        // Added HeadMountedDisplay so that MotionControllerComponent code in VRCharacter.cpp works
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "NavigationSystem", "HeadMountedDisplay" });
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 

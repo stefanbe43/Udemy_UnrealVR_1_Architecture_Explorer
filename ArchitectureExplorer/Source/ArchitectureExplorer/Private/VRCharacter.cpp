@@ -13,24 +13,13 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Curves/CurveFloat.h"
 #include "GameFramework/PlayerController.h"
+#include "MotionControllerComponent.h"
 
 // Sets default values
 AVRCharacter::AVRCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	VRRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VRRoot"));
-	if (ensure(VRRoot != nullptr))
-	{
-		VRRoot->SetupAttachment(GetRootComponent());
-	}
-
-	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	if (ensure(Camera != nullptr))
-	{
-		Camera->SetupAttachment(VRRoot);
-	}
 
 	DestinationMarker = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DestinationMarker"));
 	if (ensure(DestinationMarker != nullptr))
@@ -42,6 +31,37 @@ AVRCharacter::AVRCharacter()
 	if (ensure(PostProcessComponent != nullptr))
 	{
 		PostProcessComponent->SetupAttachment(GetRootComponent());
+	}
+
+
+	// VRRoot gets adjusted to player's position in the VR play space
+	VRRoot = CreateDefaultSubobject<USceneComponent>(TEXT("VRRoot"));
+	if (ensure(VRRoot != nullptr))
+	{
+		VRRoot->SetupAttachment(GetRootComponent());
+
+		Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+		if (ensure(Camera != nullptr))
+		{
+			Camera->SetupAttachment(VRRoot);
+		}
+
+		LeftMotionControllerComponent = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("LeftMotionControllerComponent"));
+		if (ensure(LeftMotionControllerComponent != nullptr))
+		{
+			LeftMotionControllerComponent->SetupAttachment(VRRoot);
+			LeftMotionControllerComponent->SetTrackingSource(EControllerHand::Left);
+			//LeftMotionControllerComponent->SetShowDeviceModel(true);
+		}
+
+		RightMotionControllerComponent = CreateDefaultSubobject<UMotionControllerComponent>(TEXT("RightMotionControllerComponent"));
+		if (ensure(RightMotionControllerComponent != nullptr))
+		{
+			RightMotionControllerComponent->SetupAttachment(VRRoot);
+			RightMotionControllerComponent->SetTrackingSource(EControllerHand::Right);
+			//RightMotionControllerComponent->SetShowDeviceModel(true);
+		}
+
 	}
 }
 
@@ -293,6 +313,11 @@ bool AVRCharacter::bFindTeleportDestination(FVector &OutLocation)
 		return false;
 	}
 
+	if (!ensure(RightMotionControllerComponent != nullptr))
+	{
+		return false;
+	}
+
 	// don't do line traces if we have a teleport in progress
 	// also stop showing the teleportation marker
 	if (GetWorldTimerManager().IsTimerActive(TeleportFadeTimerHandle))
@@ -304,9 +329,19 @@ bool AVRCharacter::bFindTeleportDestination(FVector &OutLocation)
 	// output parameter
 	FHitResult HitResult;
 
+	// old code that puts teleport location to where I look instead of where I point
+	//FVector Start = Camera->GetComponentLocation();
+	//FVector End = Start + MaxTeleportDistance * Camera->GetForwardVector().GetSafeNormal();
+
+	// rotate the controller direction a bit for comfort
+	FVector Point = RightMotionControllerComponent->GetForwardVector();
+	Point = Point.RotateAngleAxis(30, RightMotionControllerComponent->GetRightVector());
+	Point = Point.GetSafeNormal();
+
 	// trace from our character's location to 100 meters out in direction where we look
-	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + MaxTeleportDistance * Camera->GetForwardVector().GetSafeNormal();
+	// adding small 5cm step away in Start to avoid self-colliding with the controller mesh on Oculus Rift
+	FVector Start = RightMotionControllerComponent->GetComponentLocation() + 5.0f * Point;
+	FVector End = Start + MaxTeleportDistance * Point;
 
 	// do the linetrace
 	auto bLineTraceFoundTarget = World->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);

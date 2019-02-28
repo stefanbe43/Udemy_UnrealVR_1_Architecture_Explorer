@@ -112,13 +112,13 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Getting the screen size.
 + Calculating the centre.
 
-# I have finished up to this point.
-
 ### 16 Hand Controller Components ###
 
 + Setup hand controller components.
 + Where are the hand controller meshes?
 + Teleporting with hand controllers.
+
+# I have finished up to this point.
 
 ### 17 Parabolic Teleport Pointer ###
 
