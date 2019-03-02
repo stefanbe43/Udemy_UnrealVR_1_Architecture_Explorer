@@ -118,7 +118,16 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float MaxTeleportDistance = 1000.0f; // centimeters
+	float MaxTeleportDistance_UNUSED = 1000.0f; // centimeters
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float TeleportProjectileRadius = 3.0f; // centimeters
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float TeleportProjectileSpeed = 600.0f; // centimeters per second
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float TeleportSimulationTime = 2.0f; // second
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TeleportFadeOut = 1.0f; // seconds

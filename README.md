@@ -118,13 +118,13 @@ Understand the causes of VR sickness. Implement teleportation, play-space moveme
 + Where are the hand controller meshes?
 + Teleporting with hand controllers.
 
-# I have finished up to this point.
-
 ### 17 Parabolic Teleport Pointer ###
 
 + Why use a parabolic path?
 + How do we trace a parabolic path?
 + Predicting a projectile in Unreal.
+
+# I have finished up to this point.
 
 ### 18 Using A USplineComponent ###
 
